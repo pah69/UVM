@@ -4,18 +4,19 @@ import uvm_pkg::*;
 
 class base_seq_item extends uvm_sequence_item;
           
-          logic                    rst_n;
-      rand logic [DATA_WIDTH - 1:0] data_in;
-      rand logic                    wr;
-      rand logic                    rd;
+    rand logic                    rst_n;
+    rand  logic [DATA_WIDTH - 1:0] data_in;
+    rand  logic                    wr;
+    rand  logic                    rd;
           logic                    fifo_full;
           logic                    fifo_empty;
           logic                    fifo_threshold;
           logic                    fifo_overflow;
-            logic                    fifo_underflow;
-            logic [DATA_WIDTH - 1:0] data_out;
+  		  logic                    fifo_underflow;
+          logic [DATA_WIDTH - 1:0] data_out;
     
     `uvm_object_utils_begin(base_seq_item)
+  		 `uvm_field_int(rst_n, UVM_ALL_ON)
          `uvm_field_int(data_in,UVM_ALL_ON)
          `uvm_field_int(wr,UVM_ALL_ON)
          `uvm_field_int(rd,UVM_ALL_ON)
@@ -31,11 +32,10 @@ class base_seq_item extends uvm_sequence_item;
        super.new(name);
     endfunction
             
-  constraint data_in_range {data_in inside {[0:255]};}
-  constraint data_out_range {data_out inside {[0:255]};}
-  constraint wr_c {wr inside {[0:1]};}
-  constraint rd_c {rd inside {[0:1]};}
-  constraint wr_addr { wr_ptr inside {[0:MEM_SIZE]};}
-  constraint rd_addr { rd_ptr inside {[0:MEM_SIZE]};}
-
+    constraint data_in_range {data_in inside {[0:255]};}
+    constraint wr_c {wr inside {[0:1]};}
+    constraint rd_c {rd inside {[0:1]};}
+    constraint rst_n_c {soft rst_n == 1;}
+ 
+  
 endclass : base_seq_item

@@ -11,8 +11,8 @@ class base_sequence extends uvm_sequence#(base_seq_item);
     endfunction 
 endclass : base_sequence
 
-
-//consecutive_writes Sequence
+// *************************** WRITE *****************************
+////////////////////   Consecutive Write Sequence
 class consecutive_write_seq extends base_sequence;
 
     `uvm_object_utils(consecutive_write_seq)
@@ -29,6 +29,8 @@ class consecutive_write_seq extends base_sequence;
       
 endclass : consecutive_write_seq
 
+
+///////////////////// Single Write sequence
 class single_write_seq extends base_sequence;
 
   `uvm_object_utils(single_write_seq)
@@ -43,22 +45,25 @@ class single_write_seq extends base_sequence;
       
 endclass : single_write_seq
 
-class no_read_write_seq extends base_sequence;
+///////////////////// HALF WRITE
+class half_write_seq extends base_sequence;
 
-  `uvm_object_utils(no_read_write_seq)
+  `uvm_object_utils(half_write_seq)
 
-  function new(input string name="NO_READ_WRITE_SEQ");
+  function new(input string name="HALF_WRITE_SEQUENCE");
         super.new(name);
     endfunction
 
     task body();
-      `uvm_do_with(req, {wr == 0; rd == 0;data_in == 0;});
+      repeat(MEM_SIZE/2) begin
+          `uvm_do_with(req, {wr == 1; rd == 0;});
+        end
     endtask : body 
       
-endclass : no_read_write_seq
+endclass : half_write_seq
 
-
-//consecutive reads Sequence
+// ********************** READ *******************
+//////////////// Consecutive read Sequence
 class consecutive_read_seq extends base_sequence;
 
     `uvm_object_utils(consecutive_read_seq)
@@ -76,7 +81,7 @@ class consecutive_read_seq extends base_sequence;
 endclass : consecutive_read_seq
 
 
-//single reads Sequence
+//////////////// Single read Sequence
 class single_read_seq extends base_sequence;
 
     `uvm_object_utils(single_read_seq)
@@ -91,4 +96,83 @@ class single_read_seq extends base_sequence;
       
 endclass : single_read_seq
 
-///////
+//// HALF READ
+class half_read_seq extends base_sequence;
+
+  `uvm_object_utils(half_read_seq)
+
+  function new(input string name="HALF_READ_SEQUENCE");
+        super.new(name);
+    endfunction
+
+    task body();
+      repeat(MEM_SIZE/2) begin
+        `uvm_do_with(req, {rd == 1; wr == 0; data_in == 0;});
+        end
+    endtask : body 
+      
+endclass : half_read_seq
+
+
+//// //////////// NONE AND BOTH
+///////////////// No_read_write sequence
+class no_read_write_seq extends base_sequence;
+
+  `uvm_object_utils(no_read_write_seq)
+
+  function new(input string name="NO_READ_WRITE_SEQ");
+        super.new(name);
+    endfunction
+
+    task body();
+      `uvm_do_with(req, {wr == 0; rd == 0;data_in == 0;});
+    endtask : body 
+      
+endclass : no_read_write_seq
+/////////////// Both read_write sequence
+class both_read_write_seq extends base_sequence;
+  `uvm_object_utils(both_read_write_seq)
+  
+  function new(input string name = "BOTH_READ_WRITE_SEQ");
+    super.new(name);
+  endfunction
+  
+  task body();
+    `uvm_do_with(req, {wr == 1; rd == 1;});
+  endtask
+  
+endclass : both_read_write_seq
+
+// ***********  RESET **************
+class reset_seq extends base_sequence;
+
+  `uvm_object_utils(reset_seq)
+  function new(input string name="RST0_SEQUENCE");
+        super.new(name);
+    endfunction
+
+    task body();    
+		`uvm_do_with(req, {rst_n == 0;});
+//             #70ns;
+    endtask : body 
+endclass : reset_seq
+
+
+// class reset_seq extends base_sequence;
+//   `uvm_object_utils(reset_seq)
+  
+//   function new(input string name = "RESET_SEQ");
+//     super.new(name);
+//   endfunction
+  
+//   task body();
+//     begin
+//     `uvm_do_with(req, {rst_n == 0;});
+//     #20ns;
+//     `uvm_do_with(req, {rst_n == 1;});
+//     end
+//   endtask
+  
+// endclass : reset_seq
+    
+////////

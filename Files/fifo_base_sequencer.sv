@@ -1,4 +1,4 @@
-//Sequencer class
+//WRITE Sequencer class
 class base_sequencer extends uvm_sequencer#(base_seq_item);
     `uvm_component_utils(base_sequencer)
     
@@ -13,7 +13,7 @@ class base_sequencer extends uvm_sequencer#(base_seq_item);
 endclass : base_sequencer
 
 
-//Sequencer1 class
+//READ Sequencer1 class
 class base_sequencer1 extends uvm_sequencer#(base_seq_item);
     `uvm_component_utils(base_sequencer1)
     

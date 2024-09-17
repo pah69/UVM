@@ -12,7 +12,7 @@ package fifo_pkg;
      `include "fifo_virtual_seq.sv"
      `include "fifo_base_driver.sv"
      `include "fifo_base_agent.sv"
-    // `include "fifo_scoreboard.sv"
+    `include "fifo_scoreboard.sv"
      `include "fifo_base_env.sv"
      `include "fifo_base_test.sv"
      

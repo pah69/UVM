@@ -1,29 +1,34 @@
 //Base Driver class
 
 //////////////////// WRITE
-class base_driver1 extends uvm_driver#(base_seq_item);
-    `uvm_component_utils(base_driver1)
+class base_driver extends uvm_driver#(base_seq_item);
+    `uvm_component_utils(base_driver)
     
+  	// VIF
     virtual base_intf base_vif;
-
-    function new(input string name="base_driver1", uvm_component parent=null);
+	
+  // Constructor
+    function new(input string name="BASE_DRIVER", uvm_component parent=null);
         super.new(name,parent);
     endfunction
     
+  // build phase
     virtual function void build_phase(uvm_phase phase);
         super.build_phase(phase);
         `uvm_info(get_full_name(),{"Starting Build phase for ",get_type_name()}, UVM_LOW)
         if(!uvm_config_db#(virtual base_intf)::get(this,"","base_intf",base_vif))
-            `uvm_fatal(get_type_name(),"base_driver1 VIF Configuration failure!")
+            `uvm_fatal(get_type_name(),"BASE_DRIVER VIF Configuration failure!")
     endfunction
     
+    // start simu phase
     virtual function void start_of_simulation_phase(uvm_phase phase);
         `uvm_info(get_full_name(),{"Start of simulation phase for ",get_type_name()}, UVM_LOW)
     endfunction
     
+  // task run phase
     virtual task run_phase(uvm_phase phase);
         super.run_phase(phase);
-        `uvm_info(get_full_name(),{"Starting base_driver1 Run phase for ",get_type_name()}, UVM_LOW)
+        `uvm_info(get_full_name(),{"Starting BASE_DRIVER Run phase for ",get_type_name()}, UVM_LOW)
         forever begin
            seq_item_port.get_next_item(req);
            drv_fifo_wr(req);            
@@ -31,18 +36,21 @@ class base_driver1 extends uvm_driver#(base_seq_item);
         end
     endtask
     
+  // task driver_wr
     task drv_fifo_wr(base_seq_item req_item);
-        `uvm_info(get_type_name(),$sformatf("base_driver1 write item: %s",req_item.sprint()),UVM_LOW)
-      @(negedge base_vif.clk)
+        `uvm_info(get_type_name(),$sformatf("BASE_DRIVER write item: %s",req_item.sprint()),UVM_LOW)
+        
+        		base_vif.rst_n = req_item.rst_n;
+        		@(negedge base_vif.clk)
      // @(base_vif.clk)
-      //if (base_vif.rst_n && req_item.wr) begin
+      if (base_vif.rst_n && req_item.wr) begin
                 base_vif.data_in = req_item.data_in;
                 base_vif.wr   = req_item.wr;
                 base_vif.rd   = req_item.rd;
-     // end
+     end 
     endtask : drv_fifo_wr
     
-endclass : base_driver1
+endclass : base_driver
 
 
 
@@ -50,12 +58,13 @@ endclass : base_driver1
 
 
 ////////////////////////// READ
-class base_driver2 extends uvm_driver#(base_seq_item);
-    `uvm_component_utils(base_driver2)
+class base_driver1 extends uvm_driver#(base_seq_item);
+    `uvm_component_utils(base_driver1)
     
+  // VIF
     virtual base_intf base_vif;
-
-    function new(input string name="base_driver1_1", uvm_component parent=null);
+	// CONSTRUCTOR
+    function new(input string name="BASE_DRIVER_1", uvm_component parent=null);
         super.new(name,parent);
     endfunction
     
@@ -63,7 +72,7 @@ class base_driver2 extends uvm_driver#(base_seq_item);
         super.build_phase(phase);
         `uvm_info(get_full_name(),{"Starting Build phase for ",get_type_name()}, UVM_LOW)
         if(!uvm_config_db#(virtual base_intf)::get(this,"","base_intf",base_vif))
-            `uvm_fatal(get_type_name(),"base_driver1_1 VIF Configuration failure!")
+            `uvm_fatal(get_type_name(),"BASE_DRIVER_1 VIF Configuration failure!")
     endfunction
     
     virtual function void start_of_simulation_phase(uvm_phase phase);
@@ -72,7 +81,7 @@ class base_driver2 extends uvm_driver#(base_seq_item);
     
     virtual task run_phase(uvm_phase phase);
         super.run_phase(phase);
-        `uvm_info(get_full_name(),{"Starting base_driver1_1 Run phase for ",get_type_name()}, UVM_LOW)
+        `uvm_info(get_full_name(),{"Starting BASE_DRIVER_1 Run phase for ",get_type_name()}, UVM_LOW)
         forever begin
            seq_item_port.get_next_item(req);
            drv_fifo_rd(req);            
@@ -80,10 +89,10 @@ class base_driver2 extends uvm_driver#(base_seq_item);
         end
     endtask
         
-    task drv_fifo_rd(base_seq_item req_item);
-        `uvm_info(get_type_name(),$sformatf("base_driver1_1 read item: %s",req_item.sprint()),UVM_LOW)
-      @(negedge base_vif.clk)
-      //@(base_vif.clk)
+   task drv_fifo_rd(base_seq_item req_item);
+        `uvm_info(get_type_name(),$sformatf("BASE_DRIVER_1 read item: %s",req_item.sprint()),UVM_LOW)
+         base_vif.rst_n = req_item.rst_n;
+     @(negedge base_vif.clk)     
       if (base_vif.rst_n && req_item.rd) begin
                 base_vif.rd   = req_item.rd;
                 base_vif.wr   = req_item.wr;
@@ -91,4 +100,4 @@ class base_driver2 extends uvm_driver#(base_seq_item);
       end
     endtask : drv_fifo_rd
     
-endclass : base_driver2
+endclass : base_driver1
