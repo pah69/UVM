@@ -115,6 +115,7 @@ endclass : half_read_seq
 
 
 //// //////////// NONE AND BOTH
+
 ///////////////// No_read_write sequence
 class no_read_write_seq extends base_sequence;
 
@@ -129,7 +130,11 @@ class no_read_write_seq extends base_sequence;
     endtask : body 
       
 endclass : no_read_write_seq
+
+
 /////////////// Both read_write sequence
+
+
 class both_read_write_seq extends base_sequence;
   `uvm_object_utils(both_read_write_seq)
   
@@ -147,32 +152,12 @@ endclass : both_read_write_seq
 class reset_seq extends base_sequence;
 
   `uvm_object_utils(reset_seq)
-  function new(input string name="RST0_SEQUENCE");
+  function new(input string name="RESET_SEQUENCE");
         super.new(name);
     endfunction
 
     task body();    
 		`uvm_do_with(req, {rst_n == 0;});
-//             #70ns;
+   #20ns;
     endtask : body 
 endclass : reset_seq
-
-
-// class reset_seq extends base_sequence;
-//   `uvm_object_utils(reset_seq)
-  
-//   function new(input string name = "RESET_SEQ");
-//     super.new(name);
-//   endfunction
-  
-//   task body();
-//     begin
-//     `uvm_do_with(req, {rst_n == 0;});
-//     #20ns;
-//     `uvm_do_with(req, {rst_n == 1;});
-//     end
-//   endtask
-  
-// endclass : reset_seq
-    
-////////

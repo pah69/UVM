@@ -1,4 +1,4 @@
-`timescale 1ns / 1ns
+`timescale 1ns / 1ps
 
 // Fifo Interface
 `include "fifo_interface.sv"
@@ -42,14 +42,14 @@ module fifo_tb_top;
   initial begin
     uvm_config_db#(virtual base_intf)::set(uvm_root::get(),"*","base_intf",vif);
 
-    run_test("raw_test");
-//     run_test("single_write_read_test");
-//     run_test("fifo_full_test");
-//     run_test("fifo_empty_test");
-//     run_test("fifo_overflow_test");
-//     run_test("fifo_underflow_test");
-//     run_test("reset_mid_test");
-//     run_test("equal_ptr_test");
+    //run_test("raw_test");
+    run_test("single_write_read_test");
+    //run_test("fifo_full_test");
+    //run_test("fifo_empty_test");
+    //run_test("fifo_overflow_test");
+    //run_test("fifo_underflow_test");
+    //run_test("reset_mid_test");
+    //run_test("equal_ptr_test");
   end
 
   initial begin
